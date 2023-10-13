@@ -26,10 +26,13 @@ else:
 geckodriver_path = r"C:\seleniumdrivers\beckodriver.exe"
 
 firefox_options = webdriver.FirefoxOptions()
-firefox_options.binary_location = geckodriver_path
+firefox_options.binary_location = r"C:\Program Files\Mozilla Firefox\firefox.exe"
 
 # page load strategy
 firefox_options.set_preference("pageLoadStrategy", "eager")  
+
+# headless mode for speed
+firefox_options.add_argument("--headless")
 
 # instantiate driver
 driver = webdriver.Firefox(options=firefox_options)
@@ -93,7 +96,7 @@ with open(data_file_path, "a") as file:
                 file.write(name + "\n")
 
                 # also add the name to the existing_names set
-                existing_names.add(name)
+                existing_names.add(name)           
 
 driver.close()
 
@@ -145,7 +148,9 @@ with open(data_file_second_path, "a") as file_two:
         if name not in existing_names_freital:
             print(f"New cat found at tierheim Freital: {name}")            
             file_two.write(name + "\n")            
-            existing_names_freital.add(name)
+            existing_names_freital.add(name)    
+
+print("script finished")
 
 driver.quit()
 
