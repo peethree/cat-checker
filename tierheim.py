@@ -44,8 +44,8 @@ driver.get("https://www.dresden.de/de/rathaus/aemter-und-einrichtungen/unternehm
 try:
     cookies_accept_button = driver.find_element(By.XPATH, '//a[@class="cc-btn cc-allow" and text()="Cookies erlauben"]')
     cookies_accept_button.click()
-except Exception as e:
-    print("No cookie accept button found or encountered an error:", e)
+except:
+    print("No cookie accept button found or encountered an error")
 
 # wait for page load
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "padder")))
@@ -118,18 +118,23 @@ cat_names_freital = cat_names_first_page
 
 driver.close()
 
-driver = webdriver.Firefox(options=firefox_options)
+# error handling for when there is only 1 page of cats listed at the freital tierheim.
+try:
+    driver = webdriver.Firefox(options=firefox_options)
+    # get second page of results
+    # it doesn't seem like the shelter has the capacity for many more cats, so no point looping through page numbers for now.
+    driver.get("http://www.tierheim-freital.de/category/katzen/page/2/")
 
-# get second page of results
-# it doesn't seem like the shelter has the capacity for many more cats, so no point looping through page numbers for now.
-driver.get("http://www.tierheim-freital.de/category/katzen/page/2/")
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "post-title")))
 
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "post-title")))
-
-# for simplicity using the same script approach for the 2nd page.
-cat_names_second_page = driver.execute_script('''
-        return Array.from(document.querySelectorAll(".post-title")).map(element => element.textContent);
-    ''')
+    # for simplicity using the same script approach for the 2nd page.
+    cat_names_second_page = driver.execute_script('''
+            return Array.from(document.querySelectorAll(".post-title")).map(element => element.textContent);
+        ''')
+except:
+    print("no second page currently.")
+    # return an empty array in case of no cats listed on second page so the concatenating that follows still works.
+    cat_names_second_page = []
 
 # combine results from the two pages into one variable
 cat_names_freital += cat_names_second_page
@@ -148,9 +153,7 @@ with open(data_file_second_path, "a") as file_two:
         if name not in existing_names_freital:
             print(f"New cat found at tierheim Freital: {name}")            
             file_two.write(name + "\n")            
-            existing_names_freital.add(name)    
-
-print("script finished")
+            existing_names_freital.add(name)   
 
 driver.quit()
 
