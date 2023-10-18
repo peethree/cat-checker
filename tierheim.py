@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
+# file names for storing cat names 
 data_file_path = "cat_names_dresden.txt"
 
 data_file_second_path = "cat_names_freital.txt"
@@ -70,33 +70,27 @@ driver.execute_script("window.scrollTo(0, 0);")
 # collect kotik name data
 cat_names = driver.find_elements("css selector", ".element.element_heading")
 
+new_names_found = False
+
 # if a name is no longer listed, remove it from the text file.
 with open(data_file_path, "w") as file:
-    for name in existing_names:
-        # check if the cat is still on the shelter page
-        if name != "" and name not in [element.text for element in cat_names]:
-            print(f"The following cat from tierheim Dresden has hopefully found a new home: {name}")
-        else:
-            # write the cat's name to file
-            file.write(name + "\n")
-
-# if there's a new name added to the page that wasn't there b4, print a message.
-# program will not deal well with cats who share the same
-with open(data_file_path, "a") as file:
     for element in cat_names:
+        name = element.text
+        
         # exclude unwanted element
-        if not element.text.startswith("Unsere"):
-            name = element.text
-
-            # check if name is new
-            if name not in existing_names:
-                print(f"New cat found at tierheim Dresden: {name}")
-
-                # add the cat's name to the file
+        if not name.startswith("Unsere"):
+            # check if the cat is still on the shelter page
+            if name != "" and name not in [existing_name for existing_name in existing_names]:
+                print(f"The following cat from tierheim Dresden has hopefully found a new home: {name}")
+            else:
+                # write the cat's name to file
                 file.write(name + "\n")
-
-                # also add the name to the existing_names set
-                existing_names.add(name)           
+                # check if name is new
+                if name not in existing_names:
+                    print(f"New cat found at tierheim Dresden: {name}")
+                    # also add the name to the existing_names set
+                    existing_names.add(name)    
+                    new_names_found = True  
 
 driver.close()
 
@@ -131,29 +125,29 @@ try:
     cat_names_second_page = driver.execute_script('''
             return Array.from(document.querySelectorAll(".post-title")).map(element => element.textContent);
         ''')
-except:
-    print("no second page currently.")
+except:    
     # return an empty array in case of no cats listed on second page so the concatenating that follows still works.
     cat_names_second_page = []
 
 # combine results from the two pages into one variable
 cat_names_freital += cat_names_second_page
 
-# same exact code as for tierheim dresden at line 71
+# same code as for tierheim dresden at line 74 more or less
 with open(data_file_second_path, "w") as file_two:
-    for name in existing_names_freital:        
-        if name != "" and name not in [element for element in cat_names_freital]:
+    for element in cat_names_freital:
+        name = element
+        
+        if name != "" and name not in [existing_name for existing_name in existing_names_freital]:
             print(f"The following cat from tierheim Freital has hopefully found a new home: {name}")
-        else:            
+        else:
             file_two.write(name + "\n")
+            if name not in existing_names_freital:
+                print(f"New cat found at tierheim Freital: {name}")
+                existing_names_freital.add(name)
+                new_names_found = True
 
-with open(data_file_second_path, "a") as file_two:
-    for element in cat_names_freital:    
-        name = element        
-        if name not in existing_names_freital:
-            print(f"New cat found at tierheim Freital: {name}")            
-            file_two.write(name + "\n")            
-            existing_names_freital.add(name)   
+if not new_names_found:
+    print("no new cats found. . .")
 
 driver.quit()
 
