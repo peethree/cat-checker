@@ -31,7 +31,7 @@ firefox_options.binary_location = r"C:\Program Files\Mozilla Firefox\firefox.exe
 # page load strategy
 firefox_options.set_preference("pageLoadStrategy", "eager")  
 
-# headless mode for speed
+# headless mode for efficiency
 firefox_options.add_argument("--headless")
 
 # instantiate driver
@@ -70,27 +70,38 @@ driver.execute_script("window.scrollTo(0, 0);")
 # collect kotik name data
 cat_names = driver.find_elements("css selector", ".element.element_heading")
 
-new_names_found = False
+new_cats_found = False
 
 # if a name is no longer listed, remove it from the text file.
 with open(data_file_path, "w") as file:
+    for name in existing_names:
+        # check if the cat is still on the shelter page
+        if name != "" and name not in [element.text for element in cat_names]:
+            print(f"The following cat from tierheim Dresden has hopefully found a new home: {name}")
+        else:
+            # write the cat's name to file
+            file.write(name + "\n")
+
+# if there's a new name added to the page that wasn't there b4, print a message.
+# program will not deal well with cats who share the same
+with open(data_file_path, "a") as file:
     for element in cat_names:
-        name = element.text
-        
         # exclude unwanted element
-        if not name.startswith("Unsere"):
-            # check if the cat is still on the shelter page
-            if name != "" and name not in [existing_name for existing_name in existing_names]:
-                print(f"The following cat from tierheim Dresden has hopefully found a new home: {name}")
-            else:
-                # write the cat's name to file
+        if not element.text.startswith("Unsere"):
+            name = element.text
+
+            # check if name is new
+            if name not in existing_names:
+                print(f"New cat found at tierheim Dresden: {name}")
+
+                # add the cat's name to the file
                 file.write(name + "\n")
-                # check if name is new
-                if name not in existing_names:
-                    print(f"New cat found at tierheim Dresden: {name}")
-                    # also add the name to the existing_names set
-                    existing_names.add(name)    
-                    new_names_found = True  
+
+                # also add the name to the existing_names set
+                existing_names.add(name)   
+
+                # update this variale to keep track of new cats
+                new_cats_found = True  
 
 driver.close()
 
@@ -134,33 +145,23 @@ cat_names_freital += cat_names_second_page
 
 # same code as for tierheim dresden at line 74 more or less
 with open(data_file_second_path, "w") as file_two:
-    for element in cat_names_freital:
-        name = element
-        
-        if name != "" and name not in [existing_name for existing_name in existing_names_freital]:
+    for name in existing_names_freital:        
+        if name != "" and name not in [element for element in cat_names_freital]:
             print(f"The following cat from tierheim Freital has hopefully found a new home: {name}")
-        else:
+        else:            
             file_two.write(name + "\n")
-            if name not in existing_names_freital:
-                print(f"New cat found at tierheim Freital: {name}")
-                existing_names_freital.add(name)
-                new_names_found = True
 
-if not new_names_found:
+with open(data_file_second_path, "a") as file_two:
+    for element in cat_names_freital:    
+        name = element        
+        if name not in existing_names_freital:
+            print(f"New cat found at tierheim Freital: {name}")            
+            file_two.write(name + "\n")            
+            existing_names_freital.add(name)  
+            new_cats_found = True
+
+# when the variable "new_cats_found" has not been updated to be true, print following message
+if not new_cats_found:
     print("no new cats found. . .")
 
 driver.quit()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
