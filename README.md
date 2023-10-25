@@ -20,7 +20,8 @@ I've since made some adjustments to the script in order to have it be run as a w
 
 the action of the windows task is first opening the python interpreter. 3.10 in this case since I lost some dependencies trying to use 3.12. Then filling in the (updated for automation) script as an argument. As well as the folder I want it to start in.<br>
 <br>
-![image](https://github.com/peethree/cat-checker/assets/115643299/a52069ab-09c9-4e19-9d16-ad0c6dae1c56)
+![image](https://github.com/peethree/cat-checker/assets/115643299/e6826cc5-dc68-484a-b4fa-acb798729c73)
+
 
 <hr>
 
