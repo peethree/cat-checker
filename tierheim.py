@@ -83,7 +83,7 @@ with open(data_file_path, "w") as file:
             file.write(name + "\n")
 
 # if there's a new name added to the page that wasn't there b4, print a message.
-# program will not deal well with cats who share the same
+# program will not deal well with cats who share the same name
 with open(data_file_path, "a") as file:
     for element in cat_names:
         # exclude unwanted element
