@@ -13,6 +13,7 @@ I've since made some adjustments to the script in order to have it be run as a w
 - adding absolute paths for the text that are being written and appended to, this way the script wouldn't start writing files in sys32.
 - I've also added another file that gets written to, namely a log file. In order to keep track of the changes that way. Since when the script runs, it opens a python interpreter window and eventually after it has finished running, this window will close automatically. It would be unfortunate if the print message would be lost this way.
 - a function for log messages that I can call every time there's a print message in the code. This writes a message to file with a timestamp.
+
 ![image](https://github.com/peethree/cat-checker/assets/115643299/1ccff4c0-1a43-418e-8e67-c338b5863f3e)
 
 
