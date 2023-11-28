@@ -32,8 +32,9 @@ The triggers are set to go off four times a day. The script takes 30 seconds to 
 
 <hr>
 
-This is what the log file looks like after a couple days: <br>
+This is what the log file looks like after having run: <br>
 <br>
-![image](https://github.com/peethree/cat-checker/assets/115643299/6753ff12-05f4-466e-8d5e-5251b8bdc6eb)
+![image](https://github.com/peethree/cat-checker/assets/115643299/3335fc2b-c575-42ec-9291-60f99aa65778)
+
 
 
