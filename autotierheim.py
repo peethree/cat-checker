@@ -180,10 +180,7 @@ with open(data_file_second_path, "a") as file_two:
 # when the variable "new_cats_found" has not been updated to be true, print/log following message
 if not new_cats_found:
     print("no new cats found. . .")
-    log_message(f"no new cats found. . .", log_file_path)
+    log_message(f"no new cats found. . .\n", log_file_path)
 
-# end of log message
-with open(log_file_path, "a") as log:
-    log.write("\n~== Session Ended ==~\n")
 
 driver.quit()
