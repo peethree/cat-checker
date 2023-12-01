@@ -36,5 +36,9 @@ This is what the log file looks like after having run: <br>
 <br>
 ![image](https://github.com/peethree/cat-checker/assets/115643299/3335fc2b-c575-42ec-9291-60f99aa65778)
 
+### versions
+This script uses python 3.10 and the most recent mozilla geckodriver from april 2023. 
 
+When the script doesn't function most likely because of poor connection -- elements might get blocked and will not be able to get clicked or scrolled into view during the loop --, one way I found to deal with this, could be to import the time module and add several pauses to give the connection a chance to catch back up. Like so:
 
+<br>
